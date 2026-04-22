@@ -62,7 +62,7 @@ export namespace DensityFunction {
 		}
 
 		const root = Json.readObject(obj) ?? {}
-		const type = Json.readString(root.type)?.replace(/^minecraft:/, '')
+		const type = Json.readString(root.type)?.replace(/^minecraft:/, '').replace(/^moredfs:/, '').replace(/^erosion:/, '')
 		switch (type) {
 			case 'blend_alpha': return new ConstantMinMax(1, 0, 1)
 			case 'blend_offset': return new ConstantMinMax(0, -Infinity, Infinity)
@@ -127,6 +127,8 @@ export namespace DensityFunction {
 			case 'invert':
 			case 'quarter_negative':
 			case 'squeeze':
+			case 'sin':
+			case 'cos':
 				return new Mapped(type, inputParser(root.argument))
 			case 'add':
 			case 'mul':
@@ -660,7 +662,7 @@ export namespace DensityFunction {
 		}
 	}
 
-	const MappedType = ['abs', 'square', 'cube', 'half_negative', 'invert', 'quarter_negative', 'squeeze'] as const
+	const MappedType = ['abs', 'square', 'cube', 'half_negative', 'invert', 'quarter_negative', 'squeeze', 'sin', 'cos'] as const
 
 	export class Mapped extends Transformer {
 		private static readonly MappedTypes: Record<typeof MappedType[number], (density: number) => number> = {
@@ -674,6 +676,8 @@ export namespace DensityFunction {
 				const c = clamp(d, -1, 1)
 				return c / 2 - c * c * c / 24
 			},
+			sin: d => Math.sin(d),
+			cos: d => Math.cos(d),
 		}
 		private readonly transformer: (density: number) => number
 		constructor(
