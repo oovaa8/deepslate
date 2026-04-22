@@ -56,7 +56,8 @@
     "benchmark": "esno benchmarks/index.ts",
     "lint": "eslint . --ext .ts",
     "version": "bash scripts/version.sh",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "gl-matrix": "^3.3.0",
